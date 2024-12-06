@@ -1,7 +1,8 @@
 import os
 from groq import Groq
 from dotenv import load_dotenv
-from actions import get_response_time
+from actions import get_response_time, get_seo_page_report
+
 from prompts import system_prompt
 from json_helpers import extract_json
 
@@ -21,10 +22,11 @@ def generate_text_with_conversation(messages, model = "llama3-8b-8192"):
 
 
 available_actions = {
-    "get_response_time": get_response_time
+    # "get_response_time": get_response_time
+    "get_seo_page_report": get_seo_page_report
 }
 
-user_prompt = "What is the response time for learnwithhasan.com?"
+user_prompt = "Suggest some SEO optimization tips for google.com?"
 
 messages = [
     {"role": "system", "content": system_prompt},
@@ -52,8 +54,15 @@ while turn_count < max_turns:
             function_params = json_function[0]['function_params']
             if function_name not in available_actions:
                 raise Exception(f"Unknown action: {function_name}: {function_params}")
+                # action_function = available_actions[function_name]
+                # result = action_function(**function_params)
+                # function_result_message = f"Action_Response: {result}"
+                # messages.append({"role": "user", "content": function_result_message})
+                # print(function_result_message)
+                # break
             print(f" -- running {function_name} {function_params}")
             action_function = available_actions[function_name]
+            print(action_function, '+++++++++++', function_params)
             # call the function
             result = action_function(**function_params)
             function_result_message = f"Action_Response: {result}"
